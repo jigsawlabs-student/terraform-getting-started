@@ -25,33 +25,9 @@ resource "aws_instance" "backend_server" {
 resource "aws_security_group" "http_backend_security" {
   name = "http backend security"
   ingress {
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = "?"
+    to_port     = "?"
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["?"]
   }
-}
-
-resource "aws_security_group" "ssh_backend_security" {
-    name = "ssh security"
-    
-    ingress {
-        cidr_blocks = [
-          "0.0.0.0/0"
-        ]
-    from_port = 22
-        to_port = 22
-        protocol = "tcp"
-      }
-    
-      egress {
-       from_port = 0
-       to_port = 0
-       protocol = "-1"
-       cidr_blocks = ["0.0.0.0/0"]
-     }
-}
-
-output "connection_instructions" {
-  value = "ssh with the following: ssh -i ${aws_instance.backend_server.key_name}.pem ubuntu@${aws_instance.backend_server.public_dns}" 
 }
