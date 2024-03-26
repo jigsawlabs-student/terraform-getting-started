@@ -3,31 +3,29 @@ provider "aws" {
 }
 
 resource "aws_instance" "backend_server" {
-  ami           = "ami-07d9b9ddc6cd8dd30"
+  ami           = "ami-080e1f13689e07408"
   instance_type = "t2.micro"
   key_name = "example"
-  
-  vpc_security_group_ids = [aws_security_group.http_backend_security.id,
-   aws_security_group.ssh_backend_security.id]
-  
-  
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello Everyone" > index.html
-              nohup busybox httpd -f -p 3000 &
-              EOF
-  
+              
+  vpc_security_group_ids = [aws_security_group.http_backend_security.id]
   tags = {
       Name = "backend server"
   }
+
+  user_data = <<-EOF
+              #!/bin/bash
+              mkdir -p /var/www/html
+              echo "Hello Everyone" > /var/www/html/index.html
+              cd /var/www/html
+              nohup busybox httpd -f -p 80 &
+              EOF
 }
 
-resource "aws_security_group" "http_backend_security" {
-  name = "http backend security"
+resource "aws_security_group" "http_and_ssh_security" {
   ingress {
-    from_port   = "?"
-    to_port     = "?"
+    from_port   = ""
+    to_port     = ""
     protocol    = "tcp"
-    cidr_blocks = ["?"]
+    cidr_blocks = []
   }
 }
